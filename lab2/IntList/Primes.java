@@ -73,7 +73,7 @@ public class Primes {
         int primeCount = 0;
         int x = 2;
 
-        while (primeCount < 20) {
+        while (primeCount < 30) {
             if (isPrime(x)) {
                 System.out.println(x);
                 primeCount++;
