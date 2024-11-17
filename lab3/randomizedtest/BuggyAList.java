@@ -1,30 +1,30 @@
 package randomizedtest;
 
-/** Array based list.
- *  @author Josh Hug
+/** 基于数组的列表类。
+ *  作者：Josh Hug
  */
 
 //         0 1  2 3 4 5 6 7
 // items: [6 9 -1 2 0 0 0 0 ...]
 // size: 5
 
-/* Invariants:
- addLast: The next item we want to add, will go into position size
- getLast: The item we want to return is in position size - 1
- size: The number of items in the list should be size.
+/* 不变量：
+ addLast: 我们想要添加的下一个项目将进入位置 size
+ getLast: 我们想要返回的项目在位置 size - 1
+ size: 列表中的项目数量应该是 size。
 */
 
 public class BuggyAList<Item> {
     private Item[] items;
     private int size;
 
-    /** Creates an empty list. */
+    /** 创建一个空列表。 */
     public BuggyAList() {
-        items = (Item[]) new Object[1];
+        items = (Item[]) new Object[8]; // 初始容量为 8
         size = 0;
     }
 
-    /** Resizes the underlying array to the target capacity. */
+    /** 将底层数组的大小调整为目标容量。 */
     private void resize(int capacity) {
         Item[] a = (Item[]) new Object[capacity];
         for (int i = 0; i < size; i += 1) {
@@ -33,38 +33,38 @@ public class BuggyAList<Item> {
         items = a;
     }
 
-    /** Inserts X into the back of the list. */
+    /** 将 X 插入到列表的末尾。 */
     public void addLast(Item x) {
         if (size == items.length) {
-            resize(size * 2);
+            resize(size * 2); // 如果数组已满，则将其大小加倍
         }
         items[size] = x;
         size = size + 1;
     }
 
-    /** Returns the item from the back of the list. */
+    /** 返回列表末尾的项目。 */
     public Item getLast() {
         return items[size - 1];
     }
-    /** Gets the ith item in the list (0 is the front). */
+
+    /** 获取列表中的第 i 个项目（0 是前面）。 */
     public Item get(int i) {
         return items[i];
     }
 
-    /** Returns the number of items in the list. */
+    /** 返回列表中的项目数量。 */
     public int size() {
         return size;
     }
 
-    /** Deletes item from back of the list and
-      * returns deleted item. */
+    /** 删除列表末尾的项目并返回删除的项目。 */
     public Item removeLast() {
-        if ((size < items.length / 4) && (size > 4)) {
-            resize(size / 4);
-        }
         Item x = getLast();
         items[size - 1] = null;
         size = size - 1;
+        if ((size > 0) && (size == items.length / 4)) {
+            resize(items.length / 2); // 如果大小是数组长度的四分之一，则将其大小减半
+        }
         return x;
     }
 }
