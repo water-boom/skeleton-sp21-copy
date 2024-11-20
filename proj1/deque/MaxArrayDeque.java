@@ -3,31 +3,43 @@ package deque;
 import java.util.Comparator;
 
 public class MaxArrayDeque<T> extends ArrayDeque<T> {
-    private Comparator<T> comparator; // 用于比较元素的比较器
+    private Comparator<T> comparator;
 
-    // 构造函数，使用给定的比较器初始化MaxArrayDeque
+    /**
+     * Creates a MaxArrayDeque with the given Comparator.
+     * @param c the Comparator to use for finding the maximum element
+     */
     public MaxArrayDeque(Comparator<T> c) {
-        super(); // 调用父类ArrayDeque的构造函数
-        this.comparator = c; // 初始化比较器
+        super();
+        this.comparator = c;
     }
 
-    // 使用构造函数中提供的比较器返回队列中的最大元素
+    /**
+     * Returns the maximum element in the deque as governed by the previously given Comparator.
+     * If the MaxArrayDeque is empty, simply return null.
+     * @return the maximum element in the deque, or null if the deque is empty
+     */
     public T max() {
-        return max(this.comparator); // 调用带有比较器参数的max方法
+        return max(this.comparator);
     }
 
-    // 使用给定的比较器返回队列中的最大元素
+    /**
+     * Returns the maximum element in the deque as governed by the parameter Comparator c.
+     * If the MaxArrayDeque is empty, simply return null.
+     * @param c the Comparator to use for finding the maximum element
+     * @return the maximum element in the deque, or null if the deque is empty
+     */
     public T max(Comparator<T> c) {
-        if (this.isEmpty()) { // 如果队列为空，返回null
+        if (isEmpty()) {
             return null;
         }
-        T maxItem = this.get(0); // 假设第一个元素为最大元素
-        for (int i = 1; i < this.size(); i++) { // 遍历队列中的所有元素
-            T currentItem = this.get(i); // 获取当前元素
-            if (c.compare(currentItem, maxItem) > 0) { // 如果当前元素大于最大元素
-                maxItem = currentItem; // 更新最大元素
+        T maxElement = get(0);
+        for (int i = 1; i < size(); i++) {
+            T currentElement = get(i);
+            if (c.compare(currentElement, maxElement) > 0) {
+                maxElement = currentElement;
             }
         }
-        return maxItem; // 返回最大元素
+        return maxElement;
     }
 }
