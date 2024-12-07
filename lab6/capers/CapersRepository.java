@@ -53,8 +53,8 @@ public class CapersRepository {
     }
 
     /**
-     * 使用第一个三个非命令参数（名字、��种、年龄）创建并持久化保存一只狗。
-     * 还使用 toString() 打印狗的信���。
+     * 使用第一个三个非命令参数（名字、种、年龄）创建并持久化保存一只狗。
+     * 还使用 toString() 打印狗的信。
      * @param name 狗的名字
      * @param breed 狗的品种
      * @param age 狗的年龄
