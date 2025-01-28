@@ -1,5 +1,6 @@
 package gitlet;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -69,6 +70,19 @@ public class Main {
                 break;
             case "checkout":
                 checkout(args);
+                break;
+            case "branch":
+                branch(args[1]);
+                break;
+            case "rm branch":
+                rmbranch(args[1]);
+                break;
+            case " reset":
+                reset(args[1]);
+                break;
+            case " merge":
+                merge(args[1]);
+                break;
             default:
                 System.out.println("未知命令: " + firstArg);
                 break;
@@ -366,10 +380,151 @@ public class Main {
     }
     private static void checkoutBranch(String branchName) throws IOException{
 
+        File branchFile = new File(".gitlet/branches",branchName);
+        if (!branchFile.exists()){
+            System.out.println("没有该分支");
+            return;
+        }
+        String currentBranch = Utils.readContentsAsString(new File(".gitlet","HEAD"));
+        if (branchName.equals(currentBranch)){
+            System.out.println("无须检出该分支");
+        }
+
+        String commitid = Utils.readContentsAsString(branchFile);
+        Commit commit = getCommitById(commitid);
+        if (commit == null){
+            System.out.println("没有该id的提交");
+        }
+
+        for (String fileName : Utils.plainFilenamesIn(".")){
+            if (!commit.getBlobs().containsKey(fileName) && getCurrentCommit().getBlobs().containsKey(fileName)){
+                System.out.println("有跟踪的文件会被覆盖 请先删除 或添加并提交它");
+                return;
+            }
+        }
+        //清空工作目录
+        for (String fileName : Utils.plainFilenamesIn(".")){
+            File file = new File(fileName);
+            if (file.isFile()){
+                file.delete();
+            }
+        }
+        //从提交中赋值文件
+        for ( Map.Entry<String , String> entry : commit.getBlobs().entrySet()){
+            String fileName = entry.getKey();
+            String commmitId = entry.getValue();
+            File bolbFile = new File(fileName,commmitId);
+            byte [] fileContent = Utils.readContents(bolbFile);
+            Utils.writeContents(new File(fileName),fileContent);
+
+        }
+
+        //更新HEAD并且清空暂存区
+
+        Utils.writeContents(new File(".gitlet" , "HEAD"),branchName);
+        File stagingArea = new File (".gitlet/satging");
+        for(File file : stagingArea.listFiles()){
+            if (file.isFile()){
+                file.delete();
+            }
+        }
+
 
     }
 
+    public static void branch(String branchName) throws IOException{
 
+        File gitletDir = new File (".gitlet");
+        File branchDir = new File (gitletDir,"branches");
+        //检查分支目录是否创建
+        if (!branchDir.exists()){
+            branchDir.mkdirs();
+        }
+        //检查分支是否存在
+        File branchFile = new File (branchDir,branchName);
+        if (branchFile.exists()){
+            System.out.println("当前分支已存在");
+            return;
+        }
+        //获取当前提交的分支id
+        String currentCommitId = getCurrentCommitId();
+        //创建新分支文件
+        Utils.writeContents(branchFile,currentCommitId);
+
+    }
+
+    public static void rmbranch( String branchName) throws IOException{
+        File gitletDir = new File (".gitlet");
+        File branchDir = new File (gitletDir,"branches");
+        if (!branchDir.exists()){
+            System.out.println("文件夹不存在");
+            return;
+        }
+        //检查分支是否存在 如果存在就删除
+        File branchFile = new File (branchDir , branchName);
+        if (branchFile.isFile()){
+            branchFile.delete();
+        }else{
+            System.out.println("该分支不存在");
+        }
+        File headFile  = new File(gitletDir,"HEAD");
+        if (headFile.exists()){
+            String currentId = getCurrentCommitId();
+            if (branchName.equals(currentId)){
+                System.out.println("不能删除档当前分支");
+            }else{
+                branchFile.delete();
+            }
+        }
+    }
+
+    public static void reset(String commitId) throws IOException{
+        //获取指定的提交对象
+        Commit commit = getCommitById(commitId);
+        if (commit == null){
+            System.out.println("没有该id的提交");
+            return;
+        }
+        //清空工作目录
+        for (String fileName : Utils.plainFilenamesIn(".")){
+            File file = new File(fileName);
+            if (file.isFile()){
+                file.delete();
+            }
+        }
+
+        //从提交中复制文件到工作目录
+        for (Map.Entry<String , String> entry : commit.getBlobs().entrySet()){
+            String fileName = entry.getKey();
+            String bolbId = entry.getValue();
+            File blobFile = new File (".gitlet" , bolbId);
+            byte[] fileContent = Utils.readContents(blobFile);
+            Utils.writeContents(new File(fileName) , fileContent);
+
+        }
+
+        //更新当前分支的头指针
+            String currentBranch = Utils.readContentsAsString(new File (".gitlet" ,"HEAD"));
+            File branchFile = new File (".gitlet/branches" , currentBranch);
+            Utils.writeContents(branchFile , commitId);
+
+
+        //清空暂存区文件
+        File stagingFile = new File (".gitlet/staging" );
+        for (File files : stagingFile.listFiles()){
+            if (files.isFile()){
+                files.delete();
+            }
+        }
+
+    }
+
+    public static void merge(String branchName) throws IOException{
+        File gitletDir = new File(".getlet");
+        String currentCommitId = getCurrentCommitId();
+        
+    }
+    
     /**
      * 获取当前分支的最新提交ID。
      * @return 当前分支的最新提交ID
