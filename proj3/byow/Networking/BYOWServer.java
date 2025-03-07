@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 
 public class BYOWServer {
 
+
     static private final File CWD = new File(System.getProperty("user.dir"));
     static private final String CANVAS_FILE = ".server_canvas.png";
 
