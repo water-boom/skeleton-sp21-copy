@@ -12,7 +12,16 @@ public class SLList<Item> {
 			next = n;
 		}
 	}
-
+	public int get(Item x){
+		IntNode p = sentinel;
+		while(p.next != null){
+			if(p.item == x){
+				return (int) p.item;
+			}
+			p = p.next;
+		}
+		return 0;
+	}
 	/* The first item (if it exists) is at sentinel.next. */
 	private IntNode sentinel;
 	private int size;

@@ -1,26 +1,62 @@
 package gitlet;
 
-// TODO: any imports you need here
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Map;
 
-import java.util.Date; // TODO: You'll likely use this in this class
-
-/** Represents a gitlet commit object.
- *  TODO: It's a good idea to give a description here of what else this Class
- *  does at a high level.
- *
- *  @author TODO
- */
-public class Commit {
-    /**
-     * TODO: add instance variables here.
-     *
-     * List all instance variables of the Commit class here with a useful
-     * comment above them describing what that variable represents and how that
-     * variable is used. We've provided one example for `message`.
-     */
-
-    /** The message of this Commit. */
+/** 表示一个gitlet提交对象。 */
+public class Commit implements Serializable {
     private String message;
+    private Date timestamp;
+    private String id;
+    private String parent;
+    private Map<String, String> blobs;
 
-    /* TODO: fill in the rest of this class. */
+    public Commit(String message, Date timestamp, String parent, Map<String, String> blobs) {
+        this.message = message;
+        this.timestamp = timestamp;
+        this.parent = parent;
+        this.blobs = blobs;
+        this.id = Utils.sha1(message, timestamp.toString(), parent, blobs.toString());
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
+
+    public void setBlobs(Map<String, String> blobs) {
+        this.blobs = blobs;
+    }
+
+    public Map<String, String> getBlobs() {
+        return blobs;
+    }
 }

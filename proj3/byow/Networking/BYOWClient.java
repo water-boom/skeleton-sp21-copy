@@ -123,6 +123,8 @@ public class BYOWClient {
 
 
     public static void main(String[] args) throws IOException {
+
+
         System.out.println("BYOW Client. Please Enter the following information to connect to a server...");
         Scanner scanner = new Scanner(System.in);
         System.out.print("IP Address: ");
