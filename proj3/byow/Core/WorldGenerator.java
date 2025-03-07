@@ -15,7 +15,7 @@ public class WorldGenerator {
     private static Random RANDOM;
 
     public static void main(String[] args) {
-        long seed = 1919810;
+        long seed = Long.parseLong(args[0]);
         RANDOM = new Random(seed);
 
         TERenderer ter = new TERenderer();
