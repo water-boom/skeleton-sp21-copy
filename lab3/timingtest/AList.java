@@ -1,5 +1,4 @@
 package timingtest;
-
 /** Array based list.
  *  @author Josh Hug
  */
@@ -63,4 +62,7 @@ public class AList<Item> {
         size = size - 1;
         return x;
     }
+
+
 }
+
